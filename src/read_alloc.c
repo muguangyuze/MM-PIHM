@@ -163,6 +163,8 @@ void ReadRiver(const char *filename, rivtbl_struct *rivtbl,
     rivtbl->fromnode = (int *)malloc(nriver * sizeof(int));
     rivtbl->tonode = (int *)malloc(nriver * sizeof(int));
     rivtbl->down = (int *)malloc(nriver * sizeof(int));
+    rivtbl->up1 = (int *)malloc(nriver * sizeof(int));        // 01.12 by Wei Zhi
+    rivtbl->up2 = (int *)malloc(nriver * sizeof(int));        // 01.12 by Wei Zhi
     rivtbl->leftele = (int *)malloc(nriver * sizeof(int));
     rivtbl->rightele = (int *)malloc(nriver * sizeof(int));
     rivtbl->shp = (int *)malloc(nriver * sizeof(int));
@@ -177,12 +179,22 @@ void ReadRiver(const char *filename, rivtbl_struct *rivtbl,
     for (i = 0; i < nriver; i++)
     {
         NextLine(riv_file, cmdstr, &lno);
+        // 01.12 by Wei Zhi
+        /*
         match = sscanf(cmdstr, "%d %d %d %d %d %d %d %d %d %d",
             &index,
             &rivtbl->fromnode[i], &rivtbl->tonode[i], &rivtbl->down[i],
             &rivtbl->leftele[i], &rivtbl->rightele[i], &rivtbl->shp[i],
+            &rivtbl->matl[i], &rivtbl->bc[i], &rivtbl->rsvr[i]);  */
+        match = sscanf(cmdstr, "%d %d %d %d %d %d %d %d %d %d %d %d",
+            &index,
+            &rivtbl->fromnode[i], &rivtbl->tonode[i], &rivtbl->down[i], &rivtbl->up1[i], &rivtbl->up2[i],  // 01.12 by Wei Zhi
+            &rivtbl->leftele[i], &rivtbl->rightele[i], &rivtbl->shp[i],
             &rivtbl->matl[i], &rivtbl->bc[i], &rivtbl->rsvr[i]);
-        if (match != 10 || i != index - 1)
+        
+        // 01.12 by Wei Zhi          
+        //if (match != 10 || i != index - 1)
+        if (match != 12 || i != index - 1)
         {
             PIHMprintf(VL_ERROR,
                 "Error reading river attribute for the %dth segment.\n", i + 1);
@@ -1378,6 +1390,34 @@ void ReadCalib(const char *filename, calib_struct *cal)
 
     NextLine(global_calib, cmdstr, &lno);
     ReadKeyword(cmdstr, "SFCTMP", &cal->sfctmp, 'd', filename, lno);
+    
+    // 02.12 by Wei Zhi
+    FindLine(global_calib, "RT", &lno, filename);
+    
+    NextLine(global_calib, cmdstr, &lno);
+    ReadKeyword(cmdstr, "rate", &cal->rate, 'd', filename, lno);
+    printf( "\n cal->rate = %f \n", cal->rate);
+    
+    NextLine(global_calib, cmdstr, &lno);
+    ReadKeyword(cmdstr, "ssa", &cal->ssa, 'd', filename, lno);
+    printf( " cal->ssa = %f \n", cal->ssa);
+    
+    NextLine(global_calib, cmdstr, &lno);
+    ReadKeyword(cmdstr, "gwinflux", &cal->gwinflux, 'd', filename, lno);
+    printf( " cal->gwinflux = %f \n", cal->gwinflux);
+    
+    NextLine(global_calib, cmdstr, &lno);
+    ReadKeyword(cmdstr, "prcpconc", &cal->prcpconc, 'd', filename, lno);
+    printf( " cal->prcpconc = %f \n", cal->prcpconc);
+    
+    NextLine(global_calib, cmdstr, &lno);
+    ReadKeyword(cmdstr, "initconc", &cal->initconc, 'd', filename, lno);
+    printf( " cal->initconc = %f \n", cal->initconc);
+    
+    // 03.03 by Wei Zhi
+    NextLine(global_calib, cmdstr, &lno);
+    ReadKeyword(cmdstr, "Xsorption", &cal->Xsorption, 'd', filename, lno);
+    printf( " cal->Xsorption = %f \n", cal->Xsorption);
 
     fclose(global_calib);
 }

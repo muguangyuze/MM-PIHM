@@ -101,6 +101,7 @@ void MassBalance(const wstate_struct *ws, const wstate_struct *ws0,
 
     wf->infil = (soilw1 - soilw0) * soil->porosity / stepsize + *subrunoff +
         wf->edir_unsat + wf->edir_gw + wf->ett_unsat + wf->ett_gw;
+    
 
     if (wf->infil < 0.0)
     {

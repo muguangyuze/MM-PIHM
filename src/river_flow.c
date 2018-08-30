@@ -61,7 +61,7 @@ void RiverFlow(elem_struct *elem, river_struct *river, int riv_mode)
         left = &elem[river[i].leftele - 1];
         right = &elem[river[i].rightele - 1];
 
-        RiverToElem(&river[i], left, right);
+        RiverToElem(&river[i], left, right);    // 12.30, changes made (not here)
 
         /*
          * Flux between river channel and subsurface
@@ -116,12 +116,12 @@ void RiverToElem(river_struct *river, elem_struct *left, elem_struct *right)
     if (river->leftele > 0)
     {
         river->wf.rivflow[LEFT_AQUIF2CHANL] =
-            ChanFlowElemToRiver(left, effk_left, river, river->topo.dist_left);
+            ChanFlowElemToRiver(left, effk_left, river, river->topo.dist_left);     // 12.30, changes made
     }
     if (river->rightele > 0)
     {
         river->wf.rivflow[RIGHT_AQUIF2CHANL] =
-            ChanFlowElemToRiver(right, effk_right, river,
+            ChanFlowElemToRiver(right, effk_right, river,                           // 12.30, changes made
             river->topo.dist_right);
     }
 
@@ -448,13 +448,15 @@ double OutletFlux(int down, const river_wstate_struct *ws,
     return discharge;
 }
 
-double ChanFlowElemToRiver(const elem_struct *elem, double effk,
+//double ChanFlowElemToRiver(const elem_struct *elem, double effk,
+double ChanFlowElemToRiver(elem_struct *elem, double effk,            // 12.30, new RT change
     const river_struct *river, double distance)
 {
     double          diff_h;
     double          avg_h;
     double          grad_h;
     double          avg_ksat;
+    int             j;          // 12.30, new RT add
 
     diff_h = (river->ws.stage + river->topo.zbed) -
         (elem->ws.gw + elem->topo.zmin);
@@ -477,6 +479,27 @@ double ChanFlowElemToRiver(const elem_struct *elem, double effk,
     grad_h = diff_h / distance;
 
     avg_ksat = 0.5 * (effk + river->matl.ksath);
+    
+    // 12.30, new RT add
+    for (j = 0; j < NUM_EDGE; j++)
+    {
+         //if (elem->nabr[j] < 0)  01.15 fix OMP
+         if (elem->nabr[j] == -river->ind)
+         {
+              elem->wf.subveloRT[j] = avg_ksat * grad_h;           // 12.30, new RT add
+              elem->wf.subdistRT[j] = elem->topo.nabrdist[j];      // 12.30, new RT add
+              elem->wf.subareaRT[j] = avg_h * river->shp.length;   // 12.30, new RT add & change, replacing "elem->topo.edge[j]" by "river->shp.length"
+         }
+         
+         if (elem->nabr[j] == -river->ind)
+         {
+              elem->wf.subveloRT[j] = avg_ksat * grad_h;           // 01.15, fix OMP issue
+              elem->wf.subdistRT[j] = elem->topo.nabrdist[j];      // 01.15, fix OMP issue
+              elem->wf.subareaRT[j] = avg_h * river->shp.length;   // 01.15, fix OMP issue
+         }
+         // 01.15 fix OMP
+    }
+    // 12.30, new RT add
 
     return  river->shp.length * avg_ksat * grad_h * avg_h;
 }

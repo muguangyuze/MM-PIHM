@@ -49,6 +49,8 @@ typedef struct rivtbl_struct
     int            *fromnode;    /* upstream node id */
     int            *tonode;      /* downstream node id */
     int            *down;        /* downstream channel id */
+    int            *up1;         /* upstream channel id, 01.12 by Wei Zhi */
+    int            *up2;         /* upstream channel id, 01.12 by Wei Zhi */
     int            *leftele;     /* left bank id */
     int            *rightele;    /* right bank id */
     int            *shp;         /* river shape type */

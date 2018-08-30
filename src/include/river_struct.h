@@ -128,6 +128,8 @@ typedef struct river_struct
     int             fromnode;    /* upstream node */
     int             tonode;      /* downstream node */
     int             down;        /* down stream channel segment */
+    int             up1;         /* up stream channel segment, 01.12 by Wei Zhi */  
+    int             up2;         /* up stream channel segment, 01.12 by Wei Zhi */  
     river_attrib_struct attrib;
     river_topo_struct topo;
     shp_struct      shp;

@@ -44,8 +44,15 @@
 /* CVDENSE header file */
 #include "cvode_dense.h"
 
+// 12.30 for RT use
+#include "sundials_types.h"   // 12.30 for RT use
+#include "sundials_dense.h"   // 12.30 for RT use
+
 #if defined(_NOAH_)
 # include "spa.h"
+# include "rt.h"              // 12.30 for RT use
+# include <assert.h>          // 12.30 for RT use
+# include "oldpihm.h"         // 12.30 for RT use
 #endif
 
 #include "pihm_const.h"

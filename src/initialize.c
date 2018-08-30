@@ -123,7 +123,8 @@ void Initialize(pihm_struct pihm, N_Vector CV_Y, void **cvode_mem)
 #endif
 
     /* Initialize river segment properties */
-    InitRiver(pihm->river, pihm->elem, &pihm->rivtbl, &pihm->shptbl,
+    //InitRiver(pihm->river, pihm->elem, &pihm->rivtbl, &pihm->shptbl,
+    InitRiver(pihm, pihm->river, pihm->elem, &pihm->rivtbl, &pihm->shptbl,  // 12.30, new RT add
         &pihm->matltbl, &pihm->meshtbl, &pihm->cal);
 
     /* Correct element elevations to avoid sinks */
@@ -416,7 +417,8 @@ void InitLc(elem_struct *elem, const lctbl_struct *lctbl,
     }
 }
 
-void InitRiver(river_struct *river, elem_struct *elem,
+//void InitRiver(river_struct *river, elem_struct *elem,
+void InitRiver (pihm_struct pihm, river_struct *river, elem_struct *elem,        // 12.30, new RT add
     const rivtbl_struct *rivtbl, const shptbl_struct *shptbl,
     const matltbl_struct *matltbl, const meshtbl_struct *meshtbl,
     const calib_struct *cal)
@@ -430,7 +432,16 @@ void InitRiver(river_struct *river, elem_struct *elem,
         river[i].rightele = rivtbl->rightele[i];
         river[i].fromnode = rivtbl->fromnode[i];
         river[i].tonode = rivtbl->tonode[i];
-        river[i].down = rivtbl->down[i];
+        river[i].down = rivtbl->down[i]; 
+        river[i].up1 = rivtbl->up1[i];     // 01.12 by Wei Zhi
+        river[i].up2 = rivtbl->up2[i];     // 01.12 by Wei Zhi
+        
+        
+        // 12.30, new RT add
+        if (river[i].down < 0)      
+        {
+            pihm->riv_outlet = i + 1;
+        }
 
         for (j = 0; j < NUM_EDGE; j++)
         {
@@ -504,6 +515,8 @@ void InitRiver(river_struct *river, elem_struct *elem,
         river[i].topo.area = river[i].shp.length *
             RiverEqWid(river[i].shp.intrpl_ord, river[i].shp.depth,
             river[i].shp.coeff);
+        // 01.05
+        //printf("  river[i, %d].topo.area = %6.4f \n", i, river[i].topo.area);   
     }
 }
 
@@ -1023,6 +1036,9 @@ void InitWFlux(wflux_struct *wf)
     {
         wf->ovlflow[j] = 0.0;
         wf->subsurf[j] = 0.0;
+        wf->subveloRT[j] = 0.0;    // 12.30, new RT add
+        wf->subdistRT[j] = 0.0;    // 12.30, new RT add
+        wf->subareaRT[j] = 0.0;    // 12.30, new RT add   
     }
     wf->prcp = 0.0;
     wf->pcpdrp = 0.0;

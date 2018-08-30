@@ -97,6 +97,12 @@ typedef struct calib_struct
     double          rivshpcoeff;
     double          prcp;      /* multiplier of precipitation (-) */
     double          sfctmp;    /* offset of surface air temperature (K) */
+    double          rate;      // 02.12 rate constant
+    double          ssa;       // 02.12 specific surface area
+    double          gwinflux;  // 02.12 GW influx [mol/yr]
+    double          prcpconc;  // 02.12 precip conc 
+    double          initconc;  // 02.12 initial conc 
+    double          Xsorption; // 03.06 DOC sorption
 #if defined(_NOAH_)
     double          smcref;
     double          smcwlt;
@@ -222,6 +228,7 @@ typedef struct print_struct
 
 typedef struct pihm_struct
 {
+    int             riv_outlet;   // 12.30, new RT add
     siteinfo_struct siteinfo;
     filename_struct filename;
     meshtbl_struct  meshtbl;
@@ -248,7 +255,7 @@ typedef struct pihm_struct
 #endif
     forc_struct     forc;
     elem_struct    *elem;
-    river_struct   *river;
+    river_struct   *river;  // 10.25, changed from "riv" to "river" by Yuning in '0.60 alpha'
     calib_struct    cal;
     ctrl_struct     ctrl;
     print_struct    print;

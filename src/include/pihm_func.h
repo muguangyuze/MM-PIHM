@@ -92,7 +92,8 @@ void            BoundFluxElem(int, int, const bc_struct *,
     const wstate_struct *, const topo_struct *, const soil_struct *,
     wflux_struct *);
 void            CalcModelStep(ctrl_struct *);
-double          ChanFlowElemToRiver(const elem_struct *, double,
+//double          ChanFlowElemToRiver(const elem_struct *, double,
+double          ChanFlowElemToRiver(elem_struct *, double,                            // 12.30, new RT change
     const river_struct *, double);
 double          ChanFlowRiverToRiver(const river_struct *, const river_struct *,
     int);
@@ -134,7 +135,8 @@ void            InitMesh(elem_struct *, const meshtbl_struct *);
 void            InitOutputFile(print_struct *, const char *, int, int);
 void            InitPrtVarCtrl(const char *, const char *, int, int, int,
     varctrl_struct *);
-void            InitRiver(river_struct *, elem_struct *, const rivtbl_struct *,
+//void            InitRiver(river_struct *, elem_struct *, const rivtbl_struct *,
+void            InitRiver (pihm_struct, river_struct *, elem_struct *, const rivtbl_struct *,      // 12.30, new RT add
     const shptbl_struct *, const matltbl_struct *, const meshtbl_struct *,
     const calib_struct *);
 void            InitRiverWFlux(river_wflux_struct *);
@@ -228,7 +230,8 @@ void            SetCVodeParam(pihm_struct, void *, N_Vector);
 int             SoilTex(double, double);
 void            SolveCVode(int, int *, int, double, void *, N_Vector);
 int             StrTime(const char *);
-double          SubFlowElemToElem(const elem_struct *, const elem_struct *,
+//double          SubFlowElemToElem(const elem_struct *, const elem_struct *,
+double          SubFlowElemToElem(elem_struct *, const elem_struct *,               // 12.30, new RT change
     int);
 double          SubFlowElemToRiver(const elem_struct *, double,
     const river_struct *, double, double);

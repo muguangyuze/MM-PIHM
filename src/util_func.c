@@ -98,7 +98,8 @@ void CreateOutputDir(char *outputdir)
         time(&rawtime);
         timestamp = localtime(&rawtime);
         strftime(str, 11, "%y%m%d%H%M", timestamp);
-        sprintf(outputdir, "output/%s.%s/", project, str);
+        //sprintf(outputdir, "output/%s.%s/", project, str);
+        sprintf(outputdir, "output/%s/", project);
     }
 
     if (PIHMmkdir(outputdir) != 0)
